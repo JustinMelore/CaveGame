@@ -18,7 +18,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float sprintSpeedMultiplier = 2f;
 
     [Header("Radio Settings")]
+    [SerializeField] private AudioSource radioStaticSource;
+    [SerializeField] private AudioSource radioObjectiveSoundSource;
     [SerializeField] [UnityEngine.Range(-1, 1)] private float minimumObjectiveCloseness;
+    [SerializeField][UnityEngine.Range(0, 1)] private float radioStaticMaxVolume;
+    [SerializeField][UnityEngine.Range(0, 1)] private float radioObjectiveMaxVolume;
 
     private Vector3 playerVelocity;
     private Vector3 playerRotation;
@@ -35,6 +39,8 @@ public class PlayerController : MonoBehaviour
         objectivesInRange = new HashSet<ObjectiveItem>();
         ObjectiveItem.OnObjeciveRangeEnter += AddObjective;
         ObjectiveItem.OnObjectiveRangeExit += RemoveObjective;
+        radioStaticSource.volume = 0f;
+        radioObjectiveSoundSource.volume = 0f;
         Cursor.lockState = CursorLockMode.Locked;
     }
 
@@ -61,15 +67,25 @@ public class PlayerController : MonoBehaviour
     private void OnTuneRadio(InputValue inputValue)
     {
         isTuning = inputValue.isPressed;
-        if (isTuning) Debug.Log("Tuning radio");
-        else Debug.Log("Stopped tuning radio");
+        if (isTuning)
+        {
+
+            radioStaticSource.volume = radioStaticMaxVolume;
+            Debug.Log("Tuning radio");
+        }
+        else
+        {
+            radioStaticSource.volume = 0f;
+            radioObjectiveSoundSource.volume = 0f;
+            Debug.Log("Stopped tuning radio");
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         MovePlayer();
-        if (isTuning && objectivesInRange.Count > 0) ScanForObjectives();
+        if (isTuning) ScanForObjectives();
     }
 
     private void MovePlayer()
@@ -112,10 +128,16 @@ public class PlayerController : MonoBehaviour
         Debug.Log($"Objective out of range; {objectivesInRange.Count} objectives in range");
     }
 
+#nullable enable
     private void ScanForObjectives()
     {
+        if(objectivesInRange.Count == 0)
+        {
+            radioStaticSource.volume = radioStaticMaxVolume;
+            radioObjectiveSoundSource.volume = 0f;
+        }
         float mostDirectDot = minimumObjectiveCloseness;
-        ObjectiveItem mostDirectObjective;
+        ObjectiveItem? mostDirectObjective = null;
         foreach(ObjectiveItem objective in objectivesInRange)
         {
             Vector3 directionToObjective = objective.transform.position - transform.position;
@@ -127,6 +149,16 @@ public class PlayerController : MonoBehaviour
                 mostDirectObjective = objective;
             }
         }
-        Debug.Log($"Closeness to objective: {mostDirectDot}");
+        if(mostDirectObjective != null) {
+            float closenessRange = 1f - minimumObjectiveCloseness;
+            mostDirectDot = Mathf.Round(mostDirectDot * 100) / 100 - minimumObjectiveCloseness;
+            float objectiveVolumePercentage = mostDirectDot / closenessRange;
+            radioStaticSource.volume = radioStaticMaxVolume - radioStaticMaxVolume * objectiveVolumePercentage;
+            radioObjectiveSoundSource.volume = radioObjectiveMaxVolume * objectiveVolumePercentage;
+        } else
+        {
+            radioStaticSource.volume = radioStaticMaxVolume;
+            radioObjectiveSoundSource.volume = 0f;
+        }
     }
 }
