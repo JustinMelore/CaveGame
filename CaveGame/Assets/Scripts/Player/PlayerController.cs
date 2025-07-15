@@ -136,25 +136,34 @@ public class PlayerController : MonoBehaviour
             radioStaticSource.volume = radioStaticMaxVolume;
             radioObjectiveSoundSource.volume = 0f;
         }
-        float mostDirectDot = minimumObjectiveCloseness;
+        //float mostDirectDot = minimumObjectiveCloseness;
+        float mostDirectDot = -1f;
         ObjectiveItem? mostDirectObjective = null;
+        float minimumCloseness = 0f;
+        float distancePercentage = 0f;
         foreach(ObjectiveItem objective in objectivesInRange)
         {
             Vector3 directionToObjective = objective.transform.position - transform.position;
             directionToObjective.Normalize();
             float currentObjectiveDotProduct = Vector3.Dot(directionToObjective, transform.forward);
-            if(currentObjectiveDotProduct >= mostDirectDot)
+            float distanceToObjective = Vector3.Distance(objective.transform.position, transform.position);
+            distancePercentage = (objective.GetObjectiveRange() - distanceToObjective - 1) / (objective.GetObjectiveRange() - 1);
+            minimumCloseness = minimumObjectiveCloseness - distancePercentage * minimumObjectiveCloseness;
+            if (currentObjectiveDotProduct >= mostDirectDot && currentObjectiveDotProduct >= minimumCloseness)
             {
                 mostDirectDot = currentObjectiveDotProduct;
                 mostDirectObjective = objective;
             }
         }
         if(mostDirectObjective != null) {
-            float closenessRange = 1f - minimumObjectiveCloseness;
-            mostDirectDot = Mathf.Round(mostDirectDot * 100) / 100 - minimumObjectiveCloseness;
+            float closenessRange = 1f - minimumCloseness;
+            mostDirectDot = Mathf.Round(mostDirectDot * 100) / 100 - minimumCloseness;
+            Debug.Log($"Closeness range: {closenessRange}");
+            Debug.Log($"Closeness: {mostDirectDot}");
             float objectiveVolumePercentage = mostDirectDot / closenessRange;
             radioStaticSource.volume = radioStaticMaxVolume - radioStaticMaxVolume * objectiveVolumePercentage;
-            radioObjectiveSoundSource.volume = radioObjectiveMaxVolume * objectiveVolumePercentage;
+            //radioObjectiveSoundSource.volume = radioObjectiveMaxVolume * objectiveVolumePercentage;
+            radioObjectiveSoundSource.volume = radioObjectiveMaxVolume * distancePercentage;
         } else
         {
             radioStaticSource.volume = radioStaticMaxVolume;
