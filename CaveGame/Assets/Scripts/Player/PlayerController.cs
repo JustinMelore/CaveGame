@@ -17,6 +17,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float gravity = -9.81f;
     [SerializeField] private float sprintSpeedMultiplier = 2f;
 
+    [Header("Radio Settings")]
+    [SerializeField] [UnityEngine.Range(-1, 1)] private float minimumObjectiveCloseness;
+
     private Vector3 playerVelocity;
     private Vector3 playerRotation;
     private bool isRunning = false;
@@ -111,14 +114,14 @@ public class PlayerController : MonoBehaviour
 
     private void ScanForObjectives()
     {
-        float mostDirectDot = 0f;
+        float mostDirectDot = minimumObjectiveCloseness;
         ObjectiveItem mostDirectObjective;
         foreach(ObjectiveItem objective in objectivesInRange)
         {
             Vector3 directionToObjective = objective.transform.position - transform.position;
             directionToObjective.Normalize();
             float currentObjectiveDotProduct = Vector3.Dot(directionToObjective, transform.forward);
-            if(currentObjectiveDotProduct > mostDirectDot)
+            if(currentObjectiveDotProduct >= mostDirectDot)
             {
                 mostDirectDot = currentObjectiveDotProduct;
                 mostDirectObjective = objective;
