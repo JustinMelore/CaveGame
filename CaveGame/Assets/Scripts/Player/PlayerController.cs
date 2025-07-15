@@ -1,12 +1,12 @@
+using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    //private PlayerInputs playerInputs;
-    //private PlayerInput playerInput;
     private CharacterController characterController;
     private Camera playerCamera;
 
@@ -21,11 +21,16 @@ public class PlayerController : MonoBehaviour
     private Vector3 playerRotation;
     private bool isRunning = false;
 
+    //Made a hash set to easily add and remove objectives
+    private HashSet<ObjectiveItem> objectivesInRange;
+
     private void Awake()
     {
-        //playerInput = new PlayerInput();
         characterController = GetComponent<CharacterController>();
         playerCamera = FindFirstObjectByType<Camera>();
+        objectivesInRange = new HashSet<ObjectiveItem>();
+        ObjectiveItem.OnObjeciveRangeEnter += AddObjective;
+        ObjectiveItem.OnObjectiveRangeExit += RemoveObjective;
         Cursor.lockState = CursorLockMode.Locked;
     }
 
@@ -70,5 +75,23 @@ public class PlayerController : MonoBehaviour
     public bool IsRunning()
     {
         return IsMoving() && isRunning;
+    }
+
+    private void OnDisable()
+    {
+        ObjectiveItem.OnObjeciveRangeEnter -= AddObjective;
+        ObjectiveItem.OnObjectiveRangeExit -= RemoveObjective;
+    }
+
+    private void AddObjective(ObjectiveItem objective)
+    {
+        objectivesInRange.Add(objective);
+        Debug.Log($"Objective in range; {objectivesInRange.Count} objectives in range");
+    }
+
+    private void RemoveObjective(ObjectiveItem objective)
+    {
+        objectivesInRange.Remove(objective);
+        Debug.Log($"Objective out of range; {objectivesInRange.Count} objectives in range");
     }
 }
