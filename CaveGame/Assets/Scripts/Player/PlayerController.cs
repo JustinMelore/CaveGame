@@ -71,13 +71,13 @@ public class PlayerController : MonoBehaviour
         {
 
             radioStaticSource.volume = radioStaticMaxVolume;
-            Debug.Log("Tuning radio");
+            //Debug.Log("Tuning radio");
         }
         else
         {
             radioStaticSource.volume = 0f;
             radioObjectiveSoundSource.volume = 0f;
-            Debug.Log("Stopped tuning radio");
+            //Debug.Log("Stopped tuning radio");
         }
     }
 
@@ -119,13 +119,13 @@ public class PlayerController : MonoBehaviour
     private void AddObjective(ObjectiveItem objective)
     {
         objectivesInRange.Add(objective);
-        Debug.Log($"Objective in range; {objectivesInRange.Count} objectives in range");
+        //Debug.Log($"Objective in range; {objectivesInRange.Count} objectives in range");
     }
 
     private void RemoveObjective(ObjectiveItem objective)
     {
         objectivesInRange.Remove(objective);
-        Debug.Log($"Objective out of range; {objectivesInRange.Count} objectives in range");
+        //Debug.Log($"Objective out of range; {objectivesInRange.Count} objectives in range");
     }
 
 #nullable enable
@@ -158,8 +158,8 @@ public class PlayerController : MonoBehaviour
         if(mostDirectObjective != null) {
             float closenessRange = 1f - minimumCloseness;
             mostDirectDot = Mathf.Round(mostDirectDot * 100) / 100 - minimumCloseness;
-            Debug.Log($"Closeness range: {closenessRange}");
-            Debug.Log($"Closeness: {mostDirectDot}");
+            //Debug.Log($"Closeness range: {closenessRange}");
+            //Debug.Log($"Closeness: {mostDirectDot}");
             float objectiveVolumePercentage = mostDirectDot / closenessRange;
             radioStaticSource.volume = radioStaticMaxVolume - radioStaticMaxVolume * objectiveVolumePercentage;
             //radioObjectiveSoundSource.volume = radioObjectiveMaxVolume * objectiveVolumePercentage;
