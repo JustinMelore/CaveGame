@@ -75,7 +75,7 @@ public class PlayerController : MonoBehaviour
         playerVelocity.y += gravity * Time.deltaTime;
         transform.rotation = Quaternion.Euler(playerRotation);
         transform.rotation = Quaternion.Euler(0f, playerRotation.y, 0f);
-        Vector3 movement = (isRunning ? sprintSpeedMultiplier : 1f) * moveSpeed * (transform.right * playerVelocity.x + transform.forward * playerVelocity.z);
+        Vector3 movement = (isRunning && !isTuning ? sprintSpeedMultiplier : 1f) * moveSpeed * (transform.right * playerVelocity.x + transform.forward * playerVelocity.z);
         movement.y = playerVelocity.y;
         playerCamera.transform.localRotation = Quaternion.Euler(playerRotation.x, 0f, 0f);
         characterController.Move(movement * Time.deltaTime);
