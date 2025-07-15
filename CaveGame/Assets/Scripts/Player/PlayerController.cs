@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 playerVelocity;
     private Vector3 playerRotation;
     private bool isRunning = false;
+    private bool isTuning = false;
 
     //Made a hash set to easily add and remove objectives
     private HashSet<ObjectiveItem> objectivesInRange;
@@ -54,8 +55,21 @@ public class PlayerController : MonoBehaviour
         playerRotation.x = Mathf.Clamp(playerRotation.x, -90f, 90f);
     }
 
+    private void OnTuneRadio(InputValue inputValue)
+    {
+        isTuning = inputValue.isPressed;
+        if (isTuning) Debug.Log("Tuning radio");
+        else Debug.Log("Stopped tuning radio");
+    }
+
     // Update is called once per frame
     void Update()
+    {
+        MovePlayer();
+        if (isTuning && objectivesInRange.Count > 0) ScanForObjectives();
+    }
+
+    private void MovePlayer()
     {
         if (characterController.isGrounded && playerVelocity.y < 0) playerVelocity.y = -2f;
         playerVelocity.y += gravity * Time.deltaTime;
@@ -93,5 +107,23 @@ public class PlayerController : MonoBehaviour
     {
         objectivesInRange.Remove(objective);
         Debug.Log($"Objective out of range; {objectivesInRange.Count} objectives in range");
+    }
+
+    private void ScanForObjectives()
+    {
+        float mostDirectDot = 0f;
+        ObjectiveItem mostDirectObjective;
+        foreach(ObjectiveItem objective in objectivesInRange)
+        {
+            Vector3 directionToObjective = objective.transform.position - transform.position;
+            directionToObjective.Normalize();
+            float currentObjectiveDotProduct = Vector3.Dot(directionToObjective, transform.forward);
+            if(currentObjectiveDotProduct > mostDirectDot)
+            {
+                mostDirectDot = currentObjectiveDotProduct;
+                mostDirectObjective = objective;
+            }
+        }
+        Debug.Log($"Closeness to objective: {mostDirectDot}");
     }
 }
