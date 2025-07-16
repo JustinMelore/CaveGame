@@ -114,6 +114,7 @@ MonoBehaviour:
   minimumObjectiveCloseness: 0.8
   radioStaticMaxVolume: 0.6
   radioObjectiveMaxVolume: 1
+  minimumInteractableCloseness: 0.8
 --- !u!82 &1436112928855321103
 AudioSource:
   m_ObjectHideFlags: 0
