@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 69678112063357234}
   - component: {fileID: 8531193930106073170}
+  - component: {fileID: 4911633528111935321}
   m_Layer: 0
   m_Name: DetectionRange
   m_TagString: Untagged
@@ -53,6 +54,19 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 18
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4911633528111935321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1245574848277014205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d73a89f05c9fe16449afc9ec169fda79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactionRange: {fileID: 3951199857855684040}
 --- !u!1 &2121634298796449168
 GameObject:
   m_ObjectHideFlags: 0
@@ -237,7 +251,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3779821942639465911}
   - component: {fileID: 5939912024288682736}
-  - component: {fileID: 5560140100975549641}
   m_Layer: 0
   m_Name: ObjectiveItem
   m_TagString: Untagged
@@ -290,17 +303,3 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5560140100975549641
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5470338007451642548}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d73a89f05c9fe16449afc9ec169fda79, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  detectionRange: {fileID: 8531193930106073170}
-  interactionRange: {fileID: 3951199857855684040}

@@ -229,6 +229,11 @@ public class PlayerController : MonoBehaviour
     private void RemoveInteractable(InteractionRange interactable)
     {
         this.interactable = null;
+        if(canInteract)
+        {
+            OnLookAwayFromInteractable?.Invoke(interactable);
+            canInteract = false;
+        }
         Debug.Log($"Exited interaction range of {interactable}");
     }
 }
