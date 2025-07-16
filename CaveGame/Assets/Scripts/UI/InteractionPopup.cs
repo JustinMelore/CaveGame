@@ -2,13 +2,19 @@ using UnityEngine;
 
 public class InteractionPopup : MonoBehaviour
 {
-    [SerializeField] private GameObject interactionPopup;
+
+    private Canvas popupCanvas;
 
     private void Awake()
     {
         PlayerController.OnLookAtInteractable += ShowPopup;
         PlayerController.OnLookAwayFromInteractable += HidePopup;
-        interactionPopup.SetActive(false);
+        popupCanvas = GetComponent<Canvas>();
+    }
+
+    private void Start()
+    {
+        popupCanvas.enabled = false;
     }
 
     private void OnDisable()
@@ -19,11 +25,11 @@ public class InteractionPopup : MonoBehaviour
 
     private void ShowPopup(InteractionRange interaction)
     {
-        interactionPopup.SetActive(true);
+        popupCanvas.enabled = true;
     }
 
     private void HidePopup(InteractionRange interaction)
     {
-        interactionPopup.SetActive(false);
+        popupCanvas.enabled = false;
     }
 }
