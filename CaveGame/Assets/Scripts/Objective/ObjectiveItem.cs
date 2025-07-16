@@ -44,10 +44,9 @@ public class ObjectiveItem : MonoBehaviour
             PlayerController.OnInteractWithObject -= InteractWithObjective;
             OnObjectiveRangeExit?.Invoke(this);
             //Will be replaced with a different visual indicator in the future, like an interact animation
-            //GetComponentInChildren<Renderer>().material.color = new Color(0f, 1f, 0f);
             transform.parent.GetComponentInChildren<Renderer>().material.color = new Color(0f, 1f, 0f);
             Debug.Log($"Objective collected");
-            this.enabled = false;
+            gameObject.SetActive(false);
         }
     }
 }
