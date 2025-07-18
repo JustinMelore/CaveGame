@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -51,6 +52,7 @@ public class PlayerController : MonoBehaviour
         ObjectiveItem.OnObjectiveRangeExit += RemoveObjective;
         InteractionRange.OnInteractRangeEnter += RegisterInteractable;
         InteractionRange.OnInteractRangeExit += RemoveInteractable;
+        CreatureAI.OnPlayerCaught += PlayerCaught;
         radioStaticSource.volume = 0f;
         radioObjectiveSoundSource.volume = 0f;
         Cursor.lockState = CursorLockMode.Locked;
@@ -250,5 +252,12 @@ public class PlayerController : MonoBehaviour
             canInteract = false;
         }
         Debug.Log($"Exited interaction range of {interactable}");
+    }
+
+    private void PlayerCaught()
+    {
+        Debug.Log("Player caught");
+        //TODO Flesh out with death animation
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

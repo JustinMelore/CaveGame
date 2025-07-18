@@ -21,10 +21,13 @@ public class CreatureAI : MonoBehaviour
     [Header("Chase Settings")]
     [SerializeField] private float chaseSpeed;
 
+    public static event Action OnPlayerCaught;
+
     private enum Behavior
     {
         TRACKING,
-        CHASING
+        CHASING,
+        INACTIVE
     }
 
     void Start()
@@ -127,6 +130,7 @@ public class CreatureAI : MonoBehaviour
         if (Vector3.Distance(transform.position, playerT.position) <= footRange && mode != 0) SwitchCurrentBehavior(Behavior.CHASING);
     }
 
+
     private void HandleChasingBehavior()
     {
         agent.SetDestination(playerT.position);
@@ -137,6 +141,13 @@ public class CreatureAI : MonoBehaviour
         if (newBehavior == Behavior.CHASING) agent.speed = chaseSpeed;
         currentBehavior = newBehavior;
         Debug.Log($"Currently {newBehavior}");
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log($"Collided with {other}");
+        OnPlayerCaught?.Invoke();
+        SwitchCurrentBehavior(Behavior.INACTIVE);
     }
 
     void Random()
