@@ -56,6 +56,21 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
+    public Vector3 getPV() //added to make creature tracking easier
+    {
+        return playerVelocity;
+    }
+
+    public AudioSource getRSS() //same as above
+    {
+        return radioStaticSource;
+    }
+
+    public AudioSource getROS() //same as above
+    {
+        return radioObjectiveSoundSource;
+    }
+
     private void OnSprint(InputValue inputValue)
     {
         isRunning = inputValue.isPressed;
