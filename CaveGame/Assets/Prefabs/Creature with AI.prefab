@@ -2335,6 +2335,7 @@ GameObject:
   - component: {fileID: 2956253005153918819}
   - component: {fileID: 2220915586328119229}
   - component: {fileID: 7777360429046590531}
+  - component: {fileID: 6775503550726619331}
   m_Layer: 0
   m_Name: Creature with AI
   m_TagString: Untagged
@@ -2420,6 +2421,28 @@ MonoBehaviour:
   footRange: 15
   playerC: {fileID: 0}
   playerT: {fileID: 0}
+  chaseSpeed: 0
+--- !u!135 &6775503550726619331
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5551212780748755552}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 55
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 2.5
+  m_Center: {x: 0, y: 1.54, z: 0}
 --- !u!1 &5654246000965993858
 GameObject:
   m_ObjectHideFlags: 0

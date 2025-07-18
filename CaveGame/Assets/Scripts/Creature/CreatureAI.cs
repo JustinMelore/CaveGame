@@ -16,14 +16,39 @@ public class CreatureAI : MonoBehaviour
     NavMeshAgent agent;
     public PlayerController playerC;
     public Transform playerT;
+    private Behavior currentBehavior;
+
+    [Header("Chase Settings")]
+    [SerializeField] private float chaseSpeed;
+
+    private enum Behavior
+    {
+        TRACKING,
+        CHASING
+    }
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         mode = 0;
+        currentBehavior = Behavior.TRACKING;
+        SwitchCurrentBehavior(Behavior.CHASING);
     }
 
     void Update()
+    {
+        switch(currentBehavior)
+        {
+            case Behavior.TRACKING:
+                HandleTrackingBehavior();
+                break;
+            case Behavior.CHASING:
+                HandleChasingBehavior();
+                break;
+        }
+    }
+
+    private void HandleTrackingBehavior()
     {
         //Debug.Log("Player xv = " + playerC.getPV().x);
         //Debug.Log("Player yv = " + playerC.getPV().y);
@@ -99,6 +124,17 @@ public class CreatureAI : MonoBehaviour
         {
             tracking = false;
         }
+    }
+
+    private void HandleChasingBehavior()
+    {
+        agent.SetDestination(playerT.position);
+    }
+
+    private void SwitchCurrentBehavior(Behavior newBehavior)
+    {
+        if (newBehavior == Behavior.CHASING) agent.speed = chaseSpeed;
+        currentBehavior = newBehavior;
     }
 
     void Random()
