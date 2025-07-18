@@ -32,7 +32,7 @@ public class CreatureAI : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         mode = 0;
         currentBehavior = Behavior.TRACKING;
-        SwitchCurrentBehavior(Behavior.CHASING);
+        //SwitchCurrentBehavior(Behavior.CHASING);
     }
 
     void Update()
@@ -124,6 +124,7 @@ public class CreatureAI : MonoBehaviour
         {
             tracking = false;
         }
+        if (Vector3.Distance(transform.position, playerT.position) <= footRange && mode != 0) SwitchCurrentBehavior(Behavior.CHASING);
     }
 
     private void HandleChasingBehavior()
@@ -135,6 +136,7 @@ public class CreatureAI : MonoBehaviour
     {
         if (newBehavior == Behavior.CHASING) agent.speed = chaseSpeed;
         currentBehavior = newBehavior;
+        Debug.Log($"Currently {newBehavior}");
     }
 
     void Random()
@@ -157,5 +159,11 @@ public class CreatureAI : MonoBehaviour
         //Vector2 cPos = new Vector2(GetComponent<Transform>().position.x, GetComponent<Transform>().position.z);
         agent.destination = playerT.position;
         tracking = true;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = new Color(1f, 0f, 0f, 0.5f);
+        Gizmos.DrawSphere(transform.position, footRange);
     }
 }
