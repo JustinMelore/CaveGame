@@ -21,12 +21,22 @@ public class CreatureAI : MonoBehaviour
     [Header("Chase Settings")]
     [SerializeField] private float chaseSpeed;
 
+    [Header("Digging Settings")]
+    [SerializeField] private float digTimer;
+    [SerializeField] private float digSearchTime;
+    [SerializeField] private float soundThreshold;
+    private float currentDigTimer;
+    private float currentDigSearchTimer;
+    private float currentSoundLevel;
+    private DiggingSpawningPoint diggingSpawnPoint;
+
     public static event Action OnPlayerCaught;
 
     private enum Behavior
     {
         TRACKING,
         CHASING,
+        DIGGING,
         INACTIVE
     }
 
@@ -35,6 +45,8 @@ public class CreatureAI : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         mode = 0;
         currentBehavior = Behavior.TRACKING;
+        currentDigTimer = 0f;
+        diggingSpawnPoint = FindFirstObjectByType<DiggingSpawningPoint>();
         //SwitchCurrentBehavior(Behavior.CHASING);
     }
 
@@ -48,6 +60,9 @@ public class CreatureAI : MonoBehaviour
             case Behavior.CHASING:
                 HandleChasingBehavior();
                 break;
+            case Behavior.DIGGING:
+                HandleDiggingBehavior();
+                break;
         }
     }
 
@@ -56,6 +71,8 @@ public class CreatureAI : MonoBehaviour
         //Debug.Log("Player xv = " + playerC.getPV().x);
         //Debug.Log("Player yv = " + playerC.getPV().y);
         //Debug.Log("Player zv = " + playerC.getPV().z);
+        currentDigTimer += Time.deltaTime;
+        if (currentDigTimer >= digTimer) SwitchCurrentBehavior(Behavior.DIGGING);
         if (playerC.getPV().x != 0 || playerC.getPV().z != 0) //don't know how to include jumping if y velocity is always -2
         {
             if (playerC.getROS().volume != 0 || playerC.getRSS().volume != 0)
@@ -77,13 +94,13 @@ public class CreatureAI : MonoBehaviour
         }
         if (mode == 0)
         {
-            Debug.Log("Mode is " + mode);
+            //Debug.Log("Mode is " + mode);
             agent.speed = 1.5f;
             Random();
         }
         else if (mode == 1)
         {
-            Debug.Log("Mode is " + mode);
+            //Debug.Log("Mode is " + mode);
             agent.speed = 1.5f;
             float willIt = UnityEngine.Random.Range(0, 10);
             if (willIt < 5) //final odds are yet to be decided
@@ -97,7 +114,7 @@ public class CreatureAI : MonoBehaviour
         }
         else if (mode == 2)
         {
-            Debug.Log("Mode is " + mode);
+            //Debug.Log("Mode is " + mode);
             agent.speed = 3f;
             float willIt = UnityEngine.Random.Range(0, 10);
             if (willIt < 5) //final odds are yet to be decided
@@ -111,7 +128,7 @@ public class CreatureAI : MonoBehaviour
         }
         if (mode == 3)
         {
-            Debug.Log("Mode is " + mode);
+            //Debug.Log("Mode is " + mode);
             agent.speed = 4.5f;
             float willIt = UnityEngine.Random.Range(0, 10);
             if (willIt < 5) //final odds are yet to be decided
@@ -136,8 +153,39 @@ public class CreatureAI : MonoBehaviour
         agent.SetDestination(playerT.position);
     }
 
+    private void HandleDiggingBehavior()
+    {
+        //TODO Add digging animation and noise cue
+        currentDigSearchTimer += Time.deltaTime;
+        if (currentDigSearchTimer >= digSearchTime)
+        {
+            Debug.Log("Player not found while digging");
+            agent.isStopped = false;
+            SwitchCurrentBehavior(Behavior.TRACKING);
+        }
+        int currentNoiseAmount = 0;
+        if (playerC.getPV().x != 0 || playerC.getPV().z != 0) currentNoiseAmount += 1;
+        if (playerC.getROS().volume != 0 || playerC.getRSS().volume != 0) currentNoiseAmount += 2;
+        currentSoundLevel += currentNoiseAmount * Time.deltaTime;
+        if(currentSoundLevel >= soundThreshold)
+        {
+            Debug.Log($"Sound level reached {soundThreshold}: Creature found player");
+            transform.position = diggingSpawnPoint.transform.position;
+            agent.isStopped = false;
+            SwitchCurrentBehavior(Behavior.CHASING);
+        }
+
+    }
+
     private void SwitchCurrentBehavior(Behavior newBehavior)
     {
+        if(newBehavior == Behavior.DIGGING)
+        {
+            currentDigSearchTimer = 0f;
+            currentDigTimer = 0f;
+            currentSoundLevel = 0f;
+            agent.isStopped = true;
+        }
         if (newBehavior == Behavior.CHASING) agent.speed = chaseSpeed;
         currentBehavior = newBehavior;
         Debug.Log($"Currently {newBehavior}");
@@ -172,9 +220,9 @@ public class CreatureAI : MonoBehaviour
         tracking = true;
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = new Color(1f, 0f, 0f, 0.5f);
-        Gizmos.DrawSphere(transform.position, footRange);
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = new Color(1f, 0f, 0f, 0.5f);
+    //    Gizmos.DrawSphere(transform.position, footRange);
+    //}
 }

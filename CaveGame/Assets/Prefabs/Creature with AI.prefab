@@ -2422,6 +2422,10 @@ MonoBehaviour:
   playerC: {fileID: 0}
   playerT: {fileID: 0}
   chaseSpeed: 0
+  digTimer: 10
+  digSearchTime: 10
+  soundThreshold: 20
+  popOutSpawnDistance: 5
 --- !u!135 &6775503550726619331
 SphereCollider:
   m_ObjectHideFlags: 0
