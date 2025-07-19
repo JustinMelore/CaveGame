@@ -21,9 +21,9 @@ public class DiggingSpawningPoint : MonoBehaviour
         //else agent.isStopped = false;
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = new Color(0f, 1f, 0f, 0.75f);
-        if(agent != null) Gizmos.DrawSphere(transform.position, agent.stoppingDistance);
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = new Color(0f, 1f, 0f, 0.75f);
+    //    if(agent != null) Gizmos.DrawSphere(transform.position, agent.stoppingDistance);
+    //}
 }
